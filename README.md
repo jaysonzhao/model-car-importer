@@ -248,7 +248,7 @@ oc apply -f openshift/
 Create the compress-script configmap from the Python file which contains the python code to run the LLM Compression.
 
 The `tasks/compress/compress-code.py` script:
-- Uses the LLM Compressor library to compress the model using GPTQ quantization
+- Uses the LLM Compressor library to compress the model using AWQ quantization
 - Configures compression parameters like bits (4-bit quantization) and group size
 - Handles multi-GPU compression for faster processing
 - Saves the compressed model in the same format as the original
@@ -278,11 +278,11 @@ cat <<EOF | oc create -f -
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: modelcar-pipelinerun-qwen2
+  name: modelcar-pipelinerun-qwen
 spec:
   pipelineRef:
     name: modelcar-pipeline
-  timeout: 6h  # 6-hour timeout
+  timeout: 24h  # 24-hour timeout
   serviceAccountName: modelcar-pipeline
   params:
     - name: HUGGINGFACE_MODEL
@@ -307,8 +307,8 @@ spec:
       value: "true"
     - name: MAX_MODEL_LEN
       value: 16000
-    - name: SKIP_TASKS
-      value: "cleanup-workspace,pull-model-from-huggingface"
+    # - name: SKIP_TASKS
+    #   value: "cleanup-workspace,pull-model-from-huggingface,compress-model,evaluate-model,build-and-push-modelcar,register-with-registry"
   workspaces:
     - name: shared-workspace
       persistentVolumeClaim:

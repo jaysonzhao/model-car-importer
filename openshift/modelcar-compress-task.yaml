@@ -28,7 +28,7 @@ spec:
   steps:
     - name: compress
       image: registry.access.redhat.com/ubi9/python-311:latest
-      timeout: 4h
+      timeout: 20h
       env:
         - name: HUGGINGFACE_TOKEN
           valueFrom:

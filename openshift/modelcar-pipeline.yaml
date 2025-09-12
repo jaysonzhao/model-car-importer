@@ -175,7 +175,7 @@ spec:
     - name: compress-model
       taskRef:
         name: compress-model
-      timeout: 2h
+      timeout: 20h
       when:
         - input: $(params.COMPRESS_MODEL)
           operator: in
@@ -471,11 +471,7 @@ spec:
                   prometheus.io/port: '8080'
                 containers:
                   - name: kserve-container
-                    image: 'quay.io/modh/vllm@sha256:4f550996130e7d16cacb24ca9a2865e7cf51eddaab014ceaf31a1ea6ef86d4ec'
-                    command:
-                      - python
-                      - '-m'
-                      - vllm.entrypoints.openai.api_server
+                    image: 'registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.2.0-1754088865-hotfix-1'
                     $(cat /tmp/vllm_args.txt)
                     env:
                       - name: HF_HOME
