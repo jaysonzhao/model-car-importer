@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: modelcar-pipelinerun-qwen
+spec:
+  pipelineRef:
+    name: modelcar-pipeline
+  timeout: 24h  # 24-hour timeout
+  serviceAccountName: modelcar-pipeline
+  params:
+     - name: HUGGINGFACE_MODEL
+       value: ibm-granite/granite-3.2-2b-instruct
+     - name: OCI_IMAGE
+       value: quay.io/jaysonzhao/modelcar
+     - name: HUGGINGFACE_ALLOW_PATTERNS
+       value: ''
+     - name: COMPRESS_MODEL
+       value: 'false'
+     - name: MODEL_NAME
+       value: granite-2b
+     - name: MODEL_VERSION
+       value: 1.0.1
+     - name: SKIP_TASKS
+       value: 'compress-model,evaluate-model,register-with-registry'
+     - name: MODEL_REGISTRY_URL
+       value: quay.io/jaysonzhao/modelcar
+     - name: DEPLOY_MODEL
+       value: 'false'
+     - name: EVALUATE_MODEL
+       value: 'false'
+     - name: TASKS
+       value: 'humaneval,mbpp'
+     - name: GUIDELLM_EVALUATE_MODEL
+       value: 'false'
+     - name: MAX_MODEL_LEN
+       value: '8192'
+     - name: VLLM_ARGS
+       value: ''
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: modelcar-storage
+    - name: quay-auth-workspace
+      secret:
+        secretName: quay-auth
+  podTemplate:
+    securityContext:
+      runAsUser: 1001
+      fsGroup: 1001
+ 
+ 
