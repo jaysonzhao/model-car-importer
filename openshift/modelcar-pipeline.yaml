@@ -86,8 +86,9 @@ spec:
               echo "Setting workspace permissions..."
               mkdir /workspace/shared-workspace/model
               ls -la /workspace/shared-workspace
-              chown -R 1001:1001 /workspace/shared-workspace/model
-              chmod -R 755 /workspace/shared-workspace/model
+              #fix auth problem on aws with gp3-csi temporarily
+              #chown -R 1001:1001 /workspace/shared-workspace/model
+              #chmod -R 755 /workspace/shared-workspace/model
               echo "Workspace cleanup complete!"
       params:
         - name: SKIP_TASK
